@@ -199,16 +199,14 @@ async function loadSettingsFromServer() {
         if (!response.ok) throw new Error("서버로부터 설정을 읽어오는데 실패했습니다.");
         const data = await response.json();
         
-        document.getElementById("api-key-input").value = data.api_key || "";
         document.getElementById("model-selector").value = data.model || "gpt-4o-mini";
         
-        // Render masked API Key on sidebar status
+        // Render API Key loading status on sidebar status
         const sidebarKeyEl = document.getElementById("api-status-key-label");
-        if (data.api_key) {
-            const masked = data.api_key.substring(0, 12) + "..." + data.api_key.substring(data.api_key.length - 5);
-            sidebarKeyEl.innerText = "API Key: " + masked;
+        if (data.has_api_key) {
+            sidebarKeyEl.innerText = "API Key: 로드 완료 (.env)";
         } else {
-            sidebarKeyEl.innerText = "API Key: 설정 없음";
+            sidebarKeyEl.innerText = "API Key: 설정 필요 (.env)";
         }
     } catch (error) {
         console.error(error);
@@ -229,7 +227,6 @@ async function loadHistoryFromServer() {
 
 // Save settings to Flask SQLite DB
 async function saveSettings() {
-    const apiKey = document.getElementById("api-key-input").value.trim();
     const model = document.getElementById("model-selector").value;
 
     try {
@@ -238,7 +235,7 @@ async function saveSettings() {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ api_key: apiKey, model: model })
+            body: JSON.stringify({ model: model })
         });
 
         if (!response.ok) throw new Error("백엔드에 설정을 저장하지 못했습니다.");
@@ -697,20 +694,6 @@ function copyFullReport() {
     });
 }
 
-let keyVisible = false;
-function toggleKeyVisibility() {
-    const input = document.getElementById("api-key-input");
-    const icon = document.getElementById("key-eye-icon");
-    keyVisible = !keyVisible;
-    if (keyVisible) {
-        input.type = "text";
-        icon.setAttribute("data-lucide", "eye-off");
-    } else {
-        input.type = "password";
-        icon.setAttribute("data-lucide", "eye");
-    }
-    lucide.createIcons();
-}
 
 function triggerConfetti() {
     const duration = 2 * 1000;

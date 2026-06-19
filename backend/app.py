@@ -78,19 +78,23 @@ def get_settings():
     conn.close()
     
     settings_dict = {row['key']: row['value'] for row in rows}
-    # Return masked API key for security if requested, but for simplicity of this app
-    # we return it directly. The client side hides the key anyway.
-    return jsonify(settings_dict)
+    
+    # Check if API Key is configured in database or environment variables
+    db_key = settings_dict.get('api_key', '').strip()
+    has_api_key = bool(db_key or DEFAULT_API_KEY)
+    
+    return jsonify({
+        "model": settings_dict.get('model', 'gpt-4o-mini'),
+        "has_api_key": has_api_key
+    })
 
 @app.route('/api/settings', methods=['POST'])
 def save_settings():
     data = request.json
-    api_key = data.get('api_key', '').strip()
     model = data.get('model', 'gpt-4o-mini').strip()
     
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("INSERT OR REPLACE INTO settings (key, value) VALUES ('api_key', ?)", (api_key,))
     cursor.execute("INSERT OR REPLACE INTO settings (key, value) VALUES ('model', ?)", (model,))
     conn.commit()
     conn.close()
@@ -162,20 +166,25 @@ def run_review():
     if not code:
         return jsonify({"error": "No code provided"}), 400
 
-    # Retrieve current API credentials from SQLite DB
+    # Retrieve model settings and try to load api_key from env first, then fallback to DB
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT value FROM settings WHERE key = 'api_key'")
-    row_key = cursor.fetchone()
     cursor.execute("SELECT value FROM settings WHERE key = 'model'")
     row_model = cursor.fetchone()
+    
+    # Try environment variable first, then fallback to DB setting
+    api_key = DEFAULT_API_KEY
+    if not api_key:
+        cursor.execute("SELECT value FROM settings WHERE key = 'api_key'")
+        row_key = cursor.fetchone()
+        if row_key:
+            api_key = row_key['value']
     conn.close()
 
-    api_key = row_key['value'] if row_key else DEFAULT_API_KEY
     model = row_model['value'] if row_model else "gpt-4o-mini"
 
     if not api_key:
-        return jsonify({"error": "OpenAI API Key is missing in database settings"}), 400
+        return jsonify({"error": "OpenAI API Key가 설정되어 있지 않습니다. .env 파일에 OPENAI_API_KEY를 등록해 주세요."}), 400
 
     system_prompt = """너는 풀스택 시니어 소프트웨어 엔지니어이자 코드 리뷰 전문가이다. 
 제시된 코드 Diff 또는 전체 소스코드를 정밀하게 분석하여 다음 기준에 따라 리뷰를 수행하라.

@@ -481,14 +481,22 @@ st.sidebar.caption("스마트 코드 리뷰 에이전트 (Streamlit Cloud)")
 # Sidebar Settings Section
 st.sidebar.markdown("---")
 st.sidebar.subheader("⚙️ API 설정")
-saved_key = get_db_setting("api_key", DEFAULT_API_KEY)
-saved_model = get_db_setting("model", "gpt-4o-mini")
 
-api_key = st.sidebar.text_input("OpenAI API Key", value=saved_key, type="password")
+# Get API key from environment variables with DB key as a fallback
+api_key = DEFAULT_API_KEY
+if not api_key:
+    api_key = get_db_setting("api_key", "")
+
+# Display API key status safely
+if api_key:
+    st.sidebar.info("🔑 API Key: 환경 변수(.env)에서 로드 완료")
+else:
+    st.sidebar.warning("⚠️ API Key: 환경 변수(.env) 설정 필요")
+
+saved_model = get_db_setting("model", "gpt-4o-mini")
 model_selector = st.sidebar.selectbox("AI 모델 지정", ["gpt-4o-mini", "gpt-4o"], index=0 if saved_model == "gpt-4o-mini" else 1)
 
 if st.sidebar.button("설정 저장"):
-    save_db_setting("api_key", api_key)
     save_db_setting("model", model_selector)
     st.sidebar.success("SQLite DB에 설정이 저장되었습니다!")
 

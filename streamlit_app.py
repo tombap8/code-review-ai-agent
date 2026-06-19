@@ -23,22 +23,50 @@ CUSTOM_CSS = """
     /* outfit Google font */
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap');
     
+    :root {
+        --caution-bg: #fffbfb;
+        --caution-border: rgba(239, 68, 68, 0.2);
+        --caution-color: #7f1d1d;
+        --improvement-bg: #fbfdfb;
+        --improvement-border: rgba(16, 185, 129, 0.2);
+        --improvement-color: #14532d;
+        --table-th-bg: rgba(15, 23, 42, 0.02);
+        --table-th-color: #0f172a;
+        --table-td-color: #334155;
+        --table-border: rgba(15, 23, 42, 0.08);
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --caution-bg: #2d1919;
+            --caution-border: rgba(239, 68, 68, 0.4);
+            --caution-color: #fca5a5;
+            --improvement-bg: #14251c;
+            --improvement-border: rgba(16, 185, 129, 0.4);
+            --improvement-color: #a7f3d0;
+            --table-th-bg: rgba(255, 255, 255, 0.04);
+            --table-th-color: #f1f5f9;
+            --table-td-color: #cbd5e1;
+            --table-border: rgba(255, 255, 255, 0.1);
+        }
+    }
+    
     .main .block-container {
         font-family: 'Inter', sans-serif;
-        color: #334155;
+        color: var(--text-color);
     }
     
     /* Headers styling */
     h1, h2, h3, h4 {
         font-family: 'Outfit', sans-serif;
-        color: #0f172a !important;
+        color: var(--text-color) !important;
         font-weight: 700 !important;
     }
     
     /* Codeblock styling overrides */
     .caution-codeblock {
-        border: 1px solid rgba(239, 68, 68, 0.2) !important;
-        background-color: #fffbfb !important;
+        border: 1px solid var(--caution-border) !important;
+        background-color: var(--caution-bg) !important;
         border-radius: 0.75rem;
         padding: 1.25rem !important;
         position: relative;
@@ -46,11 +74,12 @@ CUSTOM_CSS = """
         font-size: 0.85rem;
         white-space: pre;
         overflow-x: auto;
+        color: var(--text-color) !important;
     }
     
     .improvement-codeblock {
-        border: 1px solid rgba(16, 185, 129, 0.2) !important;
-        background-color: #fbfdfb !important;
+        border: 1px solid var(--improvement-border) !important;
+        background-color: var(--improvement-bg) !important;
         border-radius: 0.75rem;
         padding: 1.25rem !important;
         position: relative;
@@ -58,6 +87,7 @@ CUSTOM_CSS = """
         font-size: 0.85rem;
         white-space: pre;
         overflow-x: auto;
+        color: var(--text-color) !important;
     }
     
     /* Code Line Diff Highlighting Styles */
@@ -80,6 +110,18 @@ CUSTOM_CSS = """
         font-weight: 500;
     }
     
+    @media (prefers-color-scheme: dark) {
+        .diff-line-removed {
+            background-color: rgba(239, 68, 68, 0.3) !important;
+            color: #fca5a5 !important;
+        }
+        
+        .diff-line-added {
+            background-color: rgba(16, 185, 129, 0.3) !important;
+            color: #a7f3d0 !important;
+        }
+    }
+    
     /* Summary table customization */
     table {
         width: 100%;
@@ -89,23 +131,23 @@ CUSTOM_CSS = """
     }
     
     th {
-        background: rgba(15, 23, 42, 0.02) !important;
-        color: #0f172a !important;
+        background: var(--table-th-bg) !important;
+        color: var(--table-th-color) !important;
         font-weight: 600;
-        border: 1px solid rgba(15, 23, 42, 0.08) !important;
+        border: 1px solid var(--table-border) !important;
         padding: 0.75rem 1rem;
     }
     
     td {
-        border: 1px solid rgba(15, 23, 42, 0.06) !important;
+        border: 1px solid var(--table-border) !important;
         padding: 0.75rem 1rem;
-        color: #334155;
+        color: var(--table-td-color) !important;
     }
     
     /* Sidebar styling overrides */
     .css-1542moe, .stSidebar {
-        background-color: #ffffff !important;
-        border-right: 1px solid #e2e8f0;
+        background-color: var(--secondary-background-color) !important;
+        border-right: 1px solid var(--border-color, #e2e8f0);
     }
 </style>
 """

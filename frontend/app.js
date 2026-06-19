@@ -190,6 +190,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Sync settings and history from Flask server
     loadSettingsFromServer();
     loadHistoryFromServer();
+
+    // Sync toggle button icon with localStorage state
+    updateThemeIcon();
 });
 
 // Sync current API config from Flask Server
@@ -259,11 +262,11 @@ function toggleInputSource(source) {
 
     if (source === 'manual') {
         btnManual.className = "pb-3 px-4 text-sm font-semibold border-b-2 border-brand-500 text-brand-600 focus:outline-none transition-all duration-300";
-        btnGithub.className = "pb-3 px-4 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-600 focus:outline-none transition-all duration-300";
+        btnGithub.className = "pb-3 px-4 text-sm font-semibold border-b-2 border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 focus:outline-none transition-all duration-300";
         githubSection.classList.add("hidden");
         inputTitle.innerText = "소스 코드 입력창";
     } else {
-        btnManual.className = "pb-3 px-4 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-600 focus:outline-none transition-all duration-300";
+        btnManual.className = "pb-3 px-4 text-sm font-semibold border-b-2 border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 focus:outline-none transition-all duration-300";
         btnGithub.className = "pb-3 px-4 text-sm font-semibold border-b-2 border-brand-500 text-brand-600 focus:outline-none transition-all duration-300";
         githubSection.classList.remove("hidden");
         inputTitle.innerText = "가져온 소스 코드 확인 및 편집";
@@ -596,7 +599,7 @@ function renderHistory() {
     const container = document.getElementById("history-list");
     if (reviewHistory.length === 0) {
         container.innerHTML = `
-            <div class="text-center py-20 text-slate-400">
+            <div class="text-center py-20 text-slate-400 dark:text-slate-500">
                 <i data-lucide="archive" class="w-12 h-12 mx-auto mb-4 stroke-1"></i>
                 <p>저장된 이전 코드 리뷰 기록이 없습니다.</p>
             </div>
@@ -606,7 +609,7 @@ function renderHistory() {
     }
 
     container.innerHTML = reviewHistory.map(item => `
-        <div class="glass-card p-5 flex items-center justify-between border-slate-200/60 hover:border-slate-300/80 transition-all duration-300">
+        <div class="glass-card p-5 flex items-center justify-between border-slate-200/60 dark:border-slate-800/60 hover:border-slate-300/80 dark:hover:border-slate-700/80 transition-all duration-300">
             <div class="space-y-1">
                 <div class="flex items-center space-x-2">
                     <span class="text-xs text-brand-600 font-semibold font-mono">${item.date}</span>
@@ -624,7 +627,7 @@ function renderHistory() {
                 <button onclick="loadHistoryItem(${item.id})" class="px-4 py-2 bg-brand-500/10 border border-brand-500/20 hover:bg-brand-600 text-brand-600 hover:text-white rounded-lg text-xs font-semibold transition-all duration-300">
                     리포트 보기
                 </button>
-                <button onclick="deleteHistoryItem(${item.id})" class="p-2 border border-slate-200 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all duration-300">
+                <button onclick="deleteHistoryItem(${item.id})" class="p-2 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 hover:text-red-500 hover:bg-red-500/10 dark:hover:bg-red-950/20 rounded-lg transition-all duration-300">
                     <i data-lucide="x" class="w-3.5 h-3.5"></i>
                 </button>
             </div>
@@ -715,4 +718,28 @@ function triggerConfetti() {
         confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
         confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
     }, 250);
+}
+
+// Dark Mode Toggle Logic
+function toggleDarkMode() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    if (isDark) {
+        localStorage.setItem('theme', 'dark');
+    } else {
+        localStorage.setItem('theme', 'light');
+    }
+    updateThemeIcon();
+}
+
+function updateThemeIcon() {
+    const themeIcon = document.getElementById("theme-toggle-icon");
+    if (!themeIcon) return;
+    const isDark = document.documentElement.classList.contains('dark');
+    if (isDark) {
+        themeIcon.setAttribute("data-lucide", "sun");
+    } else {
+        themeIcon.setAttribute("data-lucide", "moon");
+    }
+    // Re-render lucide icons
+    lucide.createIcons();
 }

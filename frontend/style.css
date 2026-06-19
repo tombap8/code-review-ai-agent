@@ -10,7 +10,29 @@
     --caution-border: rgba(239, 68, 68, 0.2);
     --improvement-bg: #fbfdfb;
     --improvement-border: rgba(16, 185, 129, 0.2);
+
+    /* Brand Colors */
+    --brand-color: #2563eb;
+    --brand-bg-tint: rgba(37, 99, 235, 0.06);
+    --brand-border-tint: rgba(37, 99, 235, 0.15);
 }
+
+.dark {
+    --glass-bg: rgba(15, 23, 42, 0.65);
+    --glass-border: rgba(51, 65, 85, 0.5);
+    --glass-highlight: rgba(30, 41, 59, 0.4);
+    
+    --caution-bg: #1e1313;
+    --caution-border: rgba(239, 68, 68, 0.3);
+    --improvement-bg: #111e14;
+    --improvement-border: rgba(16, 185, 129, 0.3);
+
+    /* Brand Colors - Aqua Rebrand for Dark Mode */
+    --brand-color: #00e5ff;
+    --brand-bg-tint: rgba(0, 229, 255, 0.1);
+    --brand-border-tint: rgba(0, 229, 255, 0.25);
+}
+
 
 /* Glassmorphism card utility - Light Rebrand */
 .glass-card {
@@ -49,10 +71,10 @@
     background: rgba(15, 23, 42, 0.03);
 }
 .nav-btn.active {
-    color: #2563eb;
-    background: rgba(37, 99, 235, 0.06);
-    border: 1px solid rgba(37, 99, 235, 0.15);
-    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.04);
+    color: var(--brand-color);
+    background: var(--brand-bg-tint);
+    border: 1px solid var(--brand-border-tint);
+    box-shadow: 0 4px 15px var(--brand-bg-tint);
 }
 
 /* Tab Content toggling */
@@ -243,3 +265,75 @@
 .glow-on-hover:hover {
     box-shadow: 0 0 15px rgba(37, 99, 235, 0.2);
 }
+
+/* Smooth transition for theme switching */
+body, aside, main, header, textarea, select, input, button {
+    transition: background-color 0.35s ease, border-color 0.35s ease, color 0.35s ease;
+}
+
+/* Dark Mode Override via Class Selector */
+.dark ::-webkit-scrollbar-track {
+    background: #0f172a;
+}
+.dark ::-webkit-scrollbar-thumb {
+    background: #334155;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
+
+/* Tab button style - Dark Mode */
+.dark .nav-btn {
+    color: #94a3b8;
+}
+.dark .nav-btn:hover {
+    color: #f1f5f9;
+    background: rgba(255, 255, 255, 0.05);
+}
+/* Redundant dark active nav selector removed (handled by CSS variable) */
+
+/* Markdown Output - Dark Mode */
+.dark .markdown-body {
+    color: #cbd5e1;
+}
+.dark .markdown-body h1, 
+.dark .markdown-body h2, 
+.dark .markdown-body h3, 
+.dark .markdown-body h4 {
+    color: #f1f5f9;
+}
+.dark .markdown-body h2 {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.dark .markdown-body table th {
+    background: rgba(255, 255, 255, 0.03);
+    color: #f1f5f9;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.dark .markdown-body table td {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #cbd5e1;
+}
+.dark .markdown-body table tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.01);
+}
+.dark .markdown-body pre {
+    background: #0f172a !important;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.dark .markdown-body code {
+    color: #f1f5f9;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Diff colors for Dark Mode */
+.dark .diff-line-removed {
+    background-color: rgba(239, 68, 68, 0.25) !important;
+    color: #fca5a5 !important;
+}
+.dark .diff-line-added {
+    background-color: rgba(16, 185, 129, 0.25) !important;
+    color: #a7f3d0 !important;
+}
+
+
